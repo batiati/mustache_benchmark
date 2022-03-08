@@ -1,13 +1,13 @@
-# Шаблонизатор Mustache, рендер на разных языках
+# Mustache template engine, rendering in different languages
 
-Результаты скорости рендера в миллисекундах, для 3-х разных шаблонов, количество прогонов 1М.
+Render speed results in milliseconds, for 3 different templates, number of runs 1M.
 
-### Без прекомпиляции шаблонов
+### No template precompilation
 
 <table>
 
 <tr>
-<th>Данные</th>
+<th>Data</th>
 <th>Erlang/bbmustache</th>
 <th>Erlang/fast</th>
 <th>Go</th>
@@ -16,7 +16,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 1</td>
+<td>Template 1</td>
 <td>23,971</td>
 <td>33,649</td>
 <td>35,620</td>
@@ -25,7 +25,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 2</td>
+<td>Template 2</td>
 <td>16,471</td>
 <td>8,330</td>
 <td>11,600</td>
@@ -34,7 +34,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 3</td>
+<td>Template 3</td>
 <td>31,246</td>
 <td>12,442</td>
 <td>16,188</td>
@@ -45,12 +45,12 @@
 </table>
 
 
-### С прекомпиляций шаблонов
+### From precompiled templates
 
 <table>
 
 <tr>
-<th>Данные</th>
+<th>Data</th>
 <th>Erlang/bbmustache</th>
 <th>Erlang/erlydtl</th>
 <th>Go</th>
@@ -60,7 +60,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 1</td>
+<td>Template 1</td>
 <td>1,814</td>
 <td>29,495</td>
 <td>19,406</td>
@@ -70,7 +70,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 2</td>
+<td>Template 2</td>
 <td>2,525</td>
 <td>7,293</td>
 <td>7,545</td>
@@ -80,7 +80,7 @@
 </tr>
 
 <tr>
-<td>Шаблон 3</td>
+<td>Template 3</td>
 <td>2,265</td>
 <td>x</td>
 <td>9,854</td>
@@ -92,94 +92,94 @@
 </table>
 
 
-##  Шаблоны
+## Templates
 
-[template 1](data/template1.html) -- 65 строк, 5020 байт, только переменные
+[template 1](data/template1.html) -- 65 lines, 5020 bytes, variables only
 
-[template 2](data/template2.html) -- 11 строк, 383 байта, только переменные
+[template 2](data/template2.html) -- 11 lines, 383 bytes, variables only
 
-[template 3](data/template3.html) -- 20 строк, 207 байт, с конструкциями if, loop etc
+[template 3](data/template3.html) -- 20 lines, 207 bytes, with if, loop etc constructs
 
 
 ## Erlang
 
-Первая реализация *Erlang/bbmustache* использует библиотеку bbmustache https://github.com/soranoba/bbmustache
+The first *Erlang/bbmustache* implementation uses the bbmustache library https://github.com/soranoba/bbmustache
 
 - Erlang/OTP 18 erts-7.1
-- bbmustache, "1.0.4"
+-bbmustache, "1.0.4"
 
 [mustache_bm.erl](erl_bbmustache/src/mustache_bm.erl)
 
-Вторая реализация *Erlang/fast* использует простую функцию на основне binary:split, которая умеет заменять переменные в шаблоне.
+The second *Erlang/fast* implementation uses a simple function based on binary:split which can replace variables in a template.
 
 [mustache_bm2.erl](erl_fast/src/mustache_bm2.erl)
 
-bbmustache с прекомпиляцией:
+bbmustache precompiled:
 [mustache_pc_bm.erl](erl_bbmustache/src/mustache_pc_bm.erl)
 
-Для bbmustache важно использовать опцию _{key\_type, string}_ (или не указывать опции, это будет по умолчанию). _{key\_type, binary}_ замедляет рендер, в некоторых случая существенно.
+It is important for bbmustache to use the _{key\_type, string}_ option (or no options, this will be the default). _{key\_type, binary}_ slows down rendering, significantly in some cases.
 
-И для сравнения ErlyDTL https://github.com/erlydtl/erlydtl с прекомпиляцией:
+And to compare ErlyDTL https://github.com/erlydtl/erlydtl with precompilation:
 [mustache_bm3.erl](erl_erlydtl/src/mustache_bm3.erl)
-(Для 3-го шаблона тест не делался, т.к. он несовместим с DTL).
+(For the 3rd template, the test was not done, because it is incompatible with the DTL).
 
 ## Go
 
 go1.3.3 linux/amd64
 
-https://github.com/cbroglie/mustache (в соответствии с традициями Go -- неизвестной версии.
-Коммит 6857e4b493bdb8d4b1931446eb41704aeb4c28cb на момент теста)
+https://github.com/cbroglie/mustache (In Go tradition -- unknown version.
+Commit 6857e4b493bdb8d4b1931446eb41704aeb4c28cb at the time of the test)
 
-Тесты, конечно, на скомпилированном бинарнике, не в интерпретаторе.
+Tests, of course, on the compiled binary, not in the interpreter.
 
 [mustache_bm.go](go_mustache/src/mbm/mustache_bm.go)
 
-Пробовал еще 3 либы:
-- https://github.com/aymerick/raymond -- эта либа очень медленная
-- https://github.com/ChrisBuchholz/gostache -- не работает с мапами, требует специфичных биндингов
-- https://github.com/alexkappa/mustache -- очень медленная
+Tried 3 more libs:
+- https://github.com/aymerick/raymond -- this one is very slow
+- https://github.com/ChrisBuchholz/gostache -- does not work with maps, requires specific bindings
+- https://github.com/alexkappa/mustache -- very slow
 
 
 ## Scala
 
-Сперва взял библиотеку Scalate
+First I took the Scalate library
 
 - scala 2.10.6
 - "org.fusesource.scalate" %% "scalate-core" % "1.6.1"
-- https://github.com/scalate/scalate
+- https://github.com/scale/scale
 
-Вариант без прекомпиляции шаблона [MustacheBM.scala](scala_scalate/src/main/scala/MustacheBM.scala) работает жутко медленно:
-- 10 рендеров -- 3970 мс
-- 100 рендеров -- 19254 мс
+The option without precompiling the template [MustacheBM.scala](scala_scalate/src/main/scala/MustacheBM.scala) is terribly slow:
+- 10 renders -- 3970ms
+- 100 renders -- 19254ms
 
-Зато с прекомпиляцией [MustachePC_BM.scala](scala_scalate/src/main/scala/MustachePC_BM.scala) показывает хорошие результаты.
+But with precompilation [MustachePC_BM.scala](scala_scalate/src/main/scala/MustachePC_BM.scala) shows good results.
 
-Попробовал другую библиотеку: https://github.com/vspy/scala-mustache
+Tried another library: https://github.com/vspy/scala-mustache
 
 [MustacheBM.scala](scala_mustache/src/main/scala/MustacheBM.scala)
 [MustachePC_BM.scala](scala_mustache/src/main/scala/MustachePC_BM.scala)
 
-Результаты получились сравнимые с другими языками.
+The results are comparable to other languages.
 
 
-## OCaml
+##OCaml
 
 - Ocaml 4.02.1
 - ezjsonm 0.4.1
 - mustache 1.0.1 https://github.com/rgrinberg/ocaml-mustache
 
-Тесты на скомпилированном в нативный код бинарнике.
+Tests on a binary compiled into native code.
 
 [mustache_bm.ml](ocaml_mustache/src/mustache_bm.ml)
 [mustache_pc_bm.ml](ocaml_mustache/src/mustache_pc_bm.ml)
 
 
-Библиотека генерирует ошибку, если в биндинге нет значения для переменной в шаблоне.
-Возможно это настраивается.
+The library generates an error if the binding does not contain a value for a variable in the template.
+Maybe it's configurable.
 
 
-## Выводы
+## Conclusions
 
-OCaml самый быстрый.
+OCaml is the fastest.
 
-Erlang/bbmustache с прекомпиляцией работает не хуже OCaml. Без прекомпиляции хуже, но неплохо на фоне других языков.
+Erlang/bbmustache with precompilation works just as well as OCaml. Without precompilation, it's worse, but not bad compared to other languages.
